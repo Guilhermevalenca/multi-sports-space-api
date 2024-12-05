@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -17,9 +18,16 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
-        $request->session()->regenerate();
+        $isEmployee = User::find(auth()->id())->employee()->exists();
 
-        return response()->noContent();
+        $token = auth()
+            ->user()
+            ->createToken($request->email, [$isEmployee ? 'employee' : 'attendee'])
+            ->plainTextToken;
+
+        return response([
+            'token' => $token,
+        ], 200);
     }
 
     /**
@@ -27,12 +35,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): Response
     {
-        Auth::guard('web')->logout();
+        $request->user()
+            ->currentAccessToken()
+            ->delete();
 
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return response()->noContent();
+        return response()
+            ->noContent();
     }
 }
