@@ -1,3 +1,4 @@
+name: 'multi-sports-space'
 services:
     laravel.test:
         build:
