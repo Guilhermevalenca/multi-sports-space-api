@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules;
 
-class RegisteredRequest extends FormRequest
+class RegisteredRequest extends LoginRequest
 {
     /**
      * Determine if the user is authorized to make this request.

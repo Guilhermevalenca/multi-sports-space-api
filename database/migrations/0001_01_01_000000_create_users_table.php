@@ -17,12 +17,14 @@ return new class extends Migration
             $table->string('email')
                 ->unique()
                 ->index();
-            $table->string('cpf')
+            $table->decimal('cpf', 11,0)
                 ->unique()
-                ->index();
-            $table->string('phone')
+                ->index()
+                ->nullable();
+            $table->decimal('phone', 11,0)
                 ->unique()
-                ->index();
+                ->index()
+                ->nullable();
             $table->timestamp('email_verified_at')
                 ->nullable();
             $table->string('password');

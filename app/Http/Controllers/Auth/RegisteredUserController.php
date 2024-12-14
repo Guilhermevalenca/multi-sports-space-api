@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisteredRequest;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -29,9 +30,13 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->string('password')),
         ]);
 
+        $request->authenticate();
+
         event(new Registered($user));
 
         $token = $user->createToken($user->email, ['guest'])->plainTextToken;
+
+        request()->session()->regenerate();
 
         return response([
             'token' => $token,
